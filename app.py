@@ -19,70 +19,41 @@ st.markdown("""
     * { font-family: 'Cairo', sans-serif; direction: rtl; }
     .stApp { background-color: var(--corporate-light); }
     
-    /* إخفاء الشريط الجانبي وزر الفتح نهائياً */
     [data-testid="stSidebar"], [data-testid="collapsedControl"] { display: none !important; }
     
-    /* ترويسة النظام (الهيدر) */
     .system-header {
-        background-color: white;
-        padding: 20px 30px;
-        border-radius: 8px;
-        border-bottom: 4px solid var(--corporate-blue);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        background-color: white; padding: 20px 30px; border-radius: 8px;
+        border-bottom: 4px solid var(--corporate-blue); box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;
     }
     .system-header h1 { margin: 0; color: var(--corporate-blue); font-size: 1.8rem; font-weight: 700; }
     
-    /* تنسيق أزرار التنقل الأفقية (الراديو) لتبدو كشريط احترافي */
     div.row-widget.stRadio > div {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        background: white;
-        padding: 10px;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        gap: 15px;
+        display: flex; flex-direction: row; justify-content: center;
+        background: white; padding: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); gap: 15px;
     }
     div.row-widget.stRadio > div > label {
-        background-color: var(--corporate-light);
-        padding: 10px 25px;
-        border-radius: 6px;
-        border: 1px solid var(--border-color);
-        cursor: pointer;
-        transition: all 0.2s ease;
+        background-color: var(--corporate-light); padding: 10px 25px; border-radius: 6px;
+        border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s ease;
     }
-    div.row-widget.stRadio > div > label:hover {
-        background-color: #eff6ff;
-        border-color: #bfdbfe;
-    }
+    div.row-widget.stRadio > div > label:hover { background-color: #eff6ff; border-color: #bfdbfe; }
     
-    /* كروت البيانات والإحصائيات */
     .pro-card {
-        background: white;
-        padding: 25px;
-        border-radius: 8px;
-        border: 1px solid var(--border-color);
-        border-right: 5px solid var(--corporate-blue);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        text-align: center;
+        background: white; padding: 25px; border-radius: 8px;
+        border: 1px solid var(--border-color); border-right: 5px solid var(--corporate-blue);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02); text-align: center;
     }
     .pro-card h3 { color: #64748b; font-size: 1rem; margin-bottom: 10px; font-weight: 600; }
     .pro-card h2 { color: #0f172a; font-size: 2.5rem; font-weight: 700; margin: 0; }
     
-    /* الأزرار العامة */
     .stButton > button {
-        background-color: var(--corporate-blue);
-        color: white; border-radius: 6px; border: none; font-weight: bold; width: 100%;
+        background-color: var(--corporate-blue); color: white; border-radius: 6px; border: none; font-weight: bold; width: 100%;
     }
     .stButton > button:hover { opacity: 0.9; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. محرك البيانات (مستقر وآمن 100%) ---
+# --- 2. محرك البيانات ---
 DB_FILE = "master_db_v10.csv"
 INV_FILE = "inventory_db_v10.csv"
 IMG_DIR = "device_vault"
@@ -109,7 +80,7 @@ def save_all():
     st.session_state.db.to_csv(DB_FILE, index=False)
     st.session_state.inv.to_csv(INV_FILE, index=False)
 
-# --- 3. محرك الطباعة (تم الحفاظ عليه كما هو) ---
+# --- 3. محرك الطباعة ---
 def print_service(content_html):
     js_code = f"""
     <div id="print-area" style="display:none;">{content_html}</div>
@@ -117,7 +88,7 @@ def print_service(content_html):
         var content = document.getElementById('print-area').innerHTML;
         var win = window.open('', '', 'height=700,width=700');
         win.document.write('<html><head><title>Print System</title>');
-        win.document.write('<style>@import url("https://fonts.googleapis.com/css2?family=Cairo&display=swap"); body {{ font-family: "Cairo", sans-serif; direction: rtl; text-align: center; }} .box {{ border: 2px solid #000; padding: 20px; border-radius: 10px; display: inline-block; min-width: 280px; }} table {{ width: 100%; margin-top: 15px; border-collapse: collapse; }} td {{ text-align: right; padding: 8px; border-bottom: 1px solid #eee; }}</style>');
+        win.document.write('<style>@import url("https://fonts.googleapis.com/css2?family=Cairo&display=swap"); body {{ font-family: "Cairo", sans-serif; direction: rtl; text-align: center; }} .box {{ border: 2px solid #000; padding: 20px; border-radius: 10px; display: inline-block; min-width: 280px; max-width: 350px; margin: 0 auto; }} table {{ width: 100%; margin-top: 10px; border-collapse: collapse; }} td {{ text-align: right; padding: 6px; border-bottom: 1px solid #eee; }}</style>');
         win.document.write('</head><body><div class="box">');
         win.document.write(content);
         win.document.write('</div></body></html>');
@@ -127,7 +98,7 @@ def print_service(content_html):
     """
     st.components.v1.html(js_code, height=0)
 
-# --- 4. حماية النظام (تسجيل الدخول) ---
+# --- 4. حماية النظام ---
 if 'auth' not in st.session_state: st.session_state.auth = False
 if not st.session_state.auth:
     st.markdown("<div class='system-header' style='justify-content:center;'><h1>🛡️ نظام الإدارة المركزي - الحل للتقنية</h1></div>", unsafe_allow_html=True)
@@ -142,7 +113,7 @@ if not st.session_state.auth:
                 else: st.error("بيانات غير صحيحة")
     st.stop()
 
-# --- 5. الترويسة وشريط التنقل الأفقي ---
+# --- 5. الترويسة والقوائم ---
 st.markdown("<div class='system-header'><h1>المركز الرئيسي | الحل للتقنية</h1><span style='color:gray;'>نظام إدارة الأصول ERP</span></div>", unsafe_allow_html=True)
 
 menu = st.radio(
@@ -186,7 +157,7 @@ elif menu == "📥 تسجيل الأجهزة":
                 st.session_state.db.loc[len(st.session_state.db)] = [new_id, name, phone, model, issue, cost, 0, "تحت الصيانة", datetime.now(), notes, path]
                 save_all(); st.success(f"تم إنشاء السجل بنجاح. رقم المرجع: {new_id}")
 
-# --- التبويب 3: البحث ---
+# --- التبويب 3: المتابعة والعمليات (معدل للطباعة المطلوبة) ---
 elif menu == "🔍 المتابعة والعمليات":
     st.subheader("محرك البحث المتقدم والإدارة")
     q = st.text_input("أدخل معرف الجهاز (ID) أو رقم الهاتف أو اسم العميل للبحث...")
@@ -211,10 +182,32 @@ elif menu == "🔍 المتابعة والعمليات":
                 with cb:
                     if row['الصورة']: st.image(row['الصورة'], width=120)
                     qr = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={row['ID']}"
+                    
+                    # زر الستيكر (بدون اسم المحل)
                     if st.button("🏷️ طباعة الباركود", key=f"qr_{idx}"):
-                        print_service(f"<h3>الحل للتقنية</h3><b>{row['الزبون']}</b><br><img src='{qr}' width='110'><br>REF: {row['ID']}")
+                        sticker_html = f"<h2>{row['الزبون']}</h2><img src='{qr}' width='120'><br><h3 style='margin:5px 0;'>ID: {row['ID']}</h3>"
+                        print_service(sticker_html)
+                    
+                    # زر الإيصال (الترويسة واللون الأحمر)
                     if st.button("📄 طباعة إيصال", key=f"pr_{idx}"):
-                        print_service(f"<h2>إيصال استلام</h2><hr>رقم المرجع: <b>{row['ID']}</b><br>العميل: {row['الزبون']}<br>النوع: {row['الموديل']}<br>التكلفة: {row['التكلفة']}$")
+                        receipt_html = f"""
+                        <h1 style='margin-bottom: 2px;'>الحل للتقنية</h1>
+                        <h4 style='margin-top: 0;'>رقم التواصل: 0916206100</h4>
+                        <hr style='border-top: 2px dashed #000;'>
+                        <h3 style='background-color: #f1f5f9; padding: 5px; border-radius: 5px;'>بيانات الجهاز والعميل</h3>
+                        <table>
+                            <tr><td><b>رقم المرجع:</b></td><td>{row['ID']}</td></tr>
+                            <tr><td><b>العميل:</b></td><td>{row['الزبون']}</td></tr>
+                            <tr><td><b>الموديل:</b></td><td>{row['الموديل']}</td></tr>
+                            <tr><td><b>العطل:</b></td><td>{row['العطل']}</td></tr>
+                            <tr><td><b>التكلفة:</b></td><td>{row['التكلفة']}$</td></tr>
+                        </table>
+                        <hr style='border-top: 2px dashed #000;'>
+                        <p style='color: red; font-size: 15px; font-weight: bold; margin-top: 15px;'>
+                            أخي الكريم، نحن غير مسؤولين عن الجهاز بعد مضي أكثر من 90 يوماً من استلام الجهاز.
+                        </p>
+                        """
+                        print_service(receipt_html)
 
 # --- التبويب 4: المخزن ---
 elif menu == "📦 المستودع العام":
