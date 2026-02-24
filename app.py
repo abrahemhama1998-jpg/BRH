@@ -3,27 +3,57 @@ import pandas as pd
 import os
 from datetime import datetime
 
-# --- 1. الإعدادات والجمالية ---
-st.set_page_config(page_title="الحل للتقنية - PRO V10", layout="wide")
+# --- 1. التصميم الإداري الاحترافي (Corporate UI) ---
+st.set_page_config(page_title="ProSystem | الحل للتقنية", layout="wide")
 
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-    * { font-family: 'Cairo', sans-serif; direction: rtl; }
-    .stApp { background-color: #f8f9fa; }
-    .metric-card {
-        background: white; padding: 20px; border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05); border-right: 5px solid #007bff;
-        text-align: center; margin-bottom: 20px;
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
+    
+    :root {
+        --primary-color: #1e3a8a; /* الأزرق الملكي */
+        --bg-color: #f1f5f9;
+        --card-bg: #ffffff;
     }
-    .profit-box {
-        background: #e3f2fd; border: 1px solid #90caf9;
-        padding: 15px; border-radius: 10px; text-align: center;
+
+    * { font-family: 'Cairo', sans-serif; direction: rtl; }
+    
+    .stApp { background-color: var(--bg-color); }
+    
+    /* تنسيق كروت الإحصائيات */
+    .corporate-card {
+        background: var(--card-bg);
+        padding: 25px;
+        border-radius: 12px;
+        border-right: 8px solid var(--primary-color);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+    .corporate-card:hover { transform: translateY(-5px); }
+    
+    /* القائمة الجانبية */
+    [data-testid="stSidebar"] {
+        background-color: #0f172a !important; /* لون كحلي غامق رسمي */
+        color: white;
+    }
+    [data-testid="stSidebar"] * { color: white !important; }
+
+    /* العناوين */
+    h1, h2, h3 { color: var(--primary-color); font-weight: 700; }
+    
+    /* تنسيق المالية */
+    .profit-section {
+        background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
     }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. إدارة البيانات ---
+# --- 2. محرك البيانات (ثابت كما هو لضمان الأمان) ---
 DB_FILE = "master_db_v10.csv"
 INV_FILE = "inventory_db_v10.csv"
 IMG_DIR = "device_vault"
@@ -50,143 +80,123 @@ def save_all():
     st.session_state.db.to_csv(DB_FILE, index=False)
     st.session_state.inv.to_csv(INV_FILE, index=False)
 
-# --- 3. محرك الطباعة المطور (لا يفتح نافذة منبثقة - يطبع فوراً) ---
+# --- 3. محرك الطباعة المستقر (بدون تغيير) ---
 def print_service(content_html):
-    # كود جافا سكريبت يضمن الطباعة بعد تحميل الصور
     js_code = f"""
     <div id="print-area" style="display:none;">{content_html}</div>
     <script>
         var content = document.getElementById('print-area').innerHTML;
         var win = window.open('', '', 'height=700,width=700');
-        win.document.write('<html><head><title>طباعة</title>');
-        win.document.write('<style>@import url("https://fonts.googleapis.com/css2?family=Cairo&display=swap"); body {{ font-family: "Cairo", sans-serif; direction: rtl; text-align: center; }} .box {{ border: 2px solid #000; padding: 15px; border-radius: 10px; display: inline-block; min-width: 250px; }} table {{ width: 100%; margin-top: 10px; }} td {{ text-align: right; padding: 5px; border-bottom: 1px solid #eee; }}</style>');
+        win.document.write('<html><head><title>Print System</title>');
+        win.document.write('<style>@import url("https://fonts.googleapis.com/css2?family=Cairo&display=swap"); body {{ font-family: "Cairo", sans-serif; direction: rtl; text-align: center; }} .box {{ border: 2px solid #000; padding: 15px; border-radius: 10px; display: inline-block; min-width: 280px; }} table {{ width: 100%; margin-top: 10px; }} td {{ text-align: right; padding: 5px; border-bottom: 1px solid #eee; }}</style>');
         win.document.write('</head><body><div class="box">');
         win.document.write(content);
         win.document.write('</div></body></html>');
         win.document.close();
-        win.onload = function() {{
-            setTimeout(function() {{ win.print(); win.close(); }}, 700);
-        }};
+        win.onload = function() {{ setTimeout(function() {{ win.print(); win.close(); }}, 800); }};
     </script>
     """
     st.components.v1.html(js_code, height=0)
 
-# --- 4. نظام الحماية ---
+# --- 4. حماية النظام ---
 if 'auth' not in st.session_state: st.session_state.auth = False
 if not st.session_state.auth:
-    st.title("🛡️ الحل للتقنية - تسجيل دخول")
-    u, p = st.text_input("المستخدم"), st.text_input("كلمة المرور", type="password")
-    if st.button("دخول"):
+    st.markdown("<h1 style='text-align:center;'>🔐 نظام الحل للتقنية - تسجيل الدخول</h1>", unsafe_allow_html=True)
+    u, p = st.text_input("اسم المستخدم"), st.text_input("كلمة المرور", type="password")
+    if st.button("دخول للنظام الآمن"):
         if u == "admin" and p == "123":
             st.session_state.auth = True
             st.rerun()
-        else: st.error("بيانات خاطئة!")
+        else: st.error("بيانات غير مصرح بها")
     st.stop()
 
-# --- 5. القائمة ---
-menu = st.sidebar.radio("القائمة الرئيسية", ["🏠 الرئيسية", "📥 استلام جديد", "🔍 البحث والإدارة", "📦 المخزن", "💰 المالية"])
+# --- 5. الهوية الجانبية الاحترافية ---
+st.sidebar.image("https://cdn-icons-png.flaticon.com/512/3067/3067451.png", width=100)
+st.sidebar.title("إدارة الحل للتقنية")
+menu = st.sidebar.selectbox("📂 الانتقال السريع:", ["📊 لوحة التحكم", "📥 قسم الاستلام", "🔍 إدارة الأجهزة", "📦 المستودع", "💰 التقارير المالية"])
 
-# --- الرئيسية ---
-if menu == "🏠 الرئيسية":
-    st.header("📈 لوحة التحكم")
+# --- التبويب 1: لوحة التحكم (الرسمية) ---
+if menu == "📊 لوحة التحكم":
+    st.header("🏢 المركز الرئيسي للمعلومات")
     df = st.session_state.db
     c1, c2, c3, c4 = st.columns(4)
-    c1.markdown(f"<div class='metric-card'><h3>📦 الأجهزة</h3><h2>{len(df)}</h2></div>", unsafe_allow_html=True)
-    c2.markdown(f"<div class='metric-card' style='border-right-color:#ffc107;'><h3>🛠️ صيانة</h3><h2>{len(df[df['الحالة']=='تحت الصيانة'])}</h2></div>", unsafe_allow_html=True)
-    c3.markdown(f"<div class='metric-card' style='border-right-color:#28a745;'><h3>✅ جاهز</h3><h2>{len(df[df['الحالة']=='جاهز'])}</h2></div>", unsafe_allow_html=True)
+    with c1: st.markdown(f"<div class='corporate-card'><h3>📦 إجمالي الطلبات</h3><h2>{len(df)}</h2></div>", unsafe_allow_html=True)
+    with c2: st.markdown(f"<div class='corporate-card' style='border-right-color:#eab308;'><h3>🛠️ تحت الإجراء</h3><h2>{len(df[df['الحالة']=='تحت الصيانة'])}</h2></div>", unsafe_allow_html=True)
+    with c3: st.markdown(f"<div class='corporate-card' style='border-right-color:#22c55e;'><h3>✅ مكتملة وجاهزة</h3><h2>{len(df[df['الحالة']=='جاهز'])}</h2></div>", unsafe_allow_html=True)
     cash = pd.to_numeric(df[df['الحالة']=='تم التسليم']['التكلفة']).sum()
-    c4.markdown(f"<div class='metric-card' style='border-right-color:#17a2b8;'><h3>💰 الدخل</h3><h2>{cash}$</h2></div>", unsafe_allow_html=True)
+    with c4: st.markdown(f"<div class='corporate-card' style='border-right-color:#0ea5e9;'><h3>💰 الإيرادات</h3><h2>{cash}$</h2></div>", unsafe_allow_html=True)
 
-# --- استلام جديد ---
-elif menu == "📥 استلام جديد":
-    st.header("📝 تسجيل استلام")
-    with st.form("add_form", clear_on_submit=True):
+# --- التبويب 2: قسم الاستلام ---
+elif menu == "📥 قسم الاستلام":
+    st.header("📋 تسجيل أصول صيانة جديدة")
+    with st.form("corporate_add"):
         c1, c2 = st.columns(2)
-        name, phone = c1.text_input("الزبون"), c2.text_input("الهاتف")
-        model, cost = c1.text_input("الموديل"), c2.number_input("التكلفة $", min_value=0)
-        issue = st.text_area("وصف العطل")
-        notes = st.text_area("ملاحظات (خدوش أو غيرها)")
-        img = st.file_uploader("صورة الجهاز", type=['jpg','png'])
-        if st.form_submit_button("حفظ الجهاز"):
+        name = c1.text_input("👤 اسم العميل بالكامل")
+        phone = c2.text_input("📱 هاتف العميل")
+        model = c1.text_input("📱 نوع وموديل الجهاز")
+        cost = c2.number_input("💵 ميزانية الصيانة المتوقعة $", min_value=0)
+        issue = st.text_area("🔧 تفاصيل العطل الفني")
+        notes = st.text_area("📝 ملاحظات حالة الاستلام (خدوش، ملحقات)")
+        img = st.file_uploader("📸 توثيق صورة الجهاز", type=['jpg','png'])
+        if st.form_submit_button("إرسال البيانات للنظام"):
             new_id = len(st.session_state.db) + 1001
             path = os.path.join(IMG_DIR, f"{new_id}.jpg") if img else ""
             if img:
                 with open(path, "wb") as f: f.write(img.getbuffer())
-            new_row = [new_id, name, phone, model, issue, cost, 0, "تحت الصيانة", datetime.now(), notes, path]
-            st.session_state.db.loc[len(st.session_state.db)] = new_row
-            save_all(); st.success(f"تم الحفظ ID: {new_id}")
+            st.session_state.db.loc[len(st.session_state.db)] = [new_id, name, phone, model, issue, cost, 0, "تحت الصيانة", datetime.now(), notes, path]
+            save_all(); st.success(f"تم تسجيل المعاملة بنجاح - رقم المرجع: {new_id}")
 
-# --- البحث والإدارة ---
-elif menu == "🔍 البحث والإدارة":
-    search_id = st.query_params.get("id", "")
-    q = st.text_input("🔎 ابحث (اسم، هاتف، ID)", value=search_id)
-    if q:
+# --- التبويب 3: إدارة الأجهزة (البحث والطباعة) ---
+elif menu == "🔍 إدارة الأجهزة":
+    st.header("🔍 وحدة المتابعة والتحكم")
+    search_q = st.text_input("ادخل اسم العميل، رقم الهاتف، أو معرف الجهاز (ID)")
+    if search_q:
         df = st.session_state.db
-        mask = df['ID'].astype(str).str.contains(q) | df['الزبون'].astype(str).str.contains(q) | df['الهاتف'].astype(str).str.contains(q)
+        mask = df['ID'].astype(str).str.contains(search_q) | df['الزبون'].astype(str).str.contains(search_q) | df['الهاتف'].astype(str).str.contains(search_q)
         results = df[mask]
         for idx, row in results.iterrows():
-            with st.expander(f"⚙️ {row['الزبون']} - ID: {row['ID']}"):
-                c1, c2 = st.columns([2, 1])
-                with c1:
-                    new_st = st.selectbox("الحالة", ["تحت الصيانة", "انتظار قطع", "جاهز", "تم التسليم"], index=["تحت الصيانة", "انتظار قطع", "جاهز", "تم التسليم"].index(row['الحالة']), key=f"st_{idx}")
-                    p_list = ["بدون قطع"] + st.session_state.inv[st.session_state.inv['الكمية'] > 0]['القطعة'].tolist()
-                    sel_p = st.selectbox("إضافة قطعة", p_list, key=f"p_{idx}")
-                    if st.button("حفظ التعديلات", key=f"save_{idx}"):
-                        if sel_p != "بدون قطع":
+            with st.expander(f"📁 سجل العملية: {row['الزبون']} | ID: {row['ID']}"):
+                col_a, col_b = st.columns([2, 1])
+                with col_a:
+                    new_status = st.selectbox("تعديل الحالة التشغيلية", ["تحت الصيانة", "انتظار قطع", "جاهز", "تم التسليم"], index=["تحت الصيانة", "انتظار قطع", "جاهز", "تم التسليم"].index(row['الحالة']), key=f"st_{idx}")
+                    p_list = ["بدون قطع غيار"] + st.session_state.inv[st.session_state.inv['الكمية'] > 0]['القطعة'].tolist()
+                    sel_p = st.selectbox("ربط قطعة من المستودع", p_list, key=f"p_{idx}")
+                    if st.button("تأكيد التحديثات", key=f"sv_{idx}"):
+                        if sel_p != "بدون قطع غيار":
                             p_info = st.session_state.inv[st.session_state.inv['القطعة'] == sel_p].iloc[0]
                             st.session_state.db.at[idx, 'سعر_القطع'] += p_info['السعر']
                             st.session_state.inv.loc[st.session_state.inv['القطعة'] == sel_p, 'الكمية'] -= 1
-                        st.session_state.db.at[idx, 'الحالة'] = new_st
+                        st.session_state.db.at[idx, 'الحالة'] = new_status
                         save_all(); st.rerun()
-                with c2:
-                    if row['الصورة']: st.image(row['الصورة'], width=100)
+                with col_b:
+                    if row['الصورة']: st.image(row['الصورة'], width=120)
                     qr_url = f"https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://brh-tech.streamlit.app/?id={row['ID']}"
-                    
-                    if st.button("🏷️ طباعة ستيكر", key=f"stk_{idx}"):
-                        stk_html = f"<h3>الحل للتقنية</h3><b>{row['الزبون']}</b><br><br><img src='{qr_url}' width='120'><br><br>ID: {row['ID']}"
-                        print_service(stk_html)
-                    
-                    if st.button("📄 طباعة وصل", key=f"rec_{idx}"):
-                        rec_html = f"""
-                        <h2 style='border-bottom:2px solid #000;'>وصل استلام صيانة</h2>
-                        <table>
-                            <tr><td><b>رقم الجهاز:</b></td><td>{row['ID']}</td></tr>
-                            <tr><td><b>الزبون:</b></td><td>{row['الزبون']}</td></tr>
-                            <tr><td><b>الجهاز:</b></td><td>{row['الموديل']}</td></tr>
-                            <tr><td><b>العطل:</b></td><td>{row['العطل']}</td></tr>
-                            <tr><td><b>التكلفة:</b></td><td>{row['التكلفة']}$</td></tr>
-                            <tr><td><b>ملاحظات:</b></td><td>{row['ملاحظات']}</td></tr>
-                        </table>
-                        <p style='margin-top:20px; font-size:12px;'>التاريخ: {str(row['التاريخ'])[:16]}</p>
-                        """
+                    if st.button("🏷️ طباعة ستيكر المرجع", key=f"stk_{idx}"):
+                        print_service(f"<h3>الحل للتقنية</h3><b>{row['الزبون']}</b><br><img src='{qr_url}' width='110'><br>REF: {row['ID']}")
+                    if st.button("📄 إصدار وصل رسمي", key=f"rec_{idx}"):
+                        rec_html = f"<h3>فاتورة صيانة رسمية</h3><hr><table><tr><td><b>رقم الجهاز:</b></td><td>{row['ID']}</td></tr><tr><td><b>العميل:</b></td><td>{row['الزبون']}</td></tr><tr><td><b>الموديل:</b></td><td>{row['الموديل']}</td></tr><tr><td><b>العطل:</b></td><td>{row['العطل']}</td></tr><tr><td><b>المبلغ:</b></td><td>{row['التكلفة']}$</td></tr></table><p>تاريخ: {str(row['التاريخ'])[:16]}</p>"
                         print_service(rec_html)
 
-# --- المخزن ---
-elif menu == "📦 المخزن":
-    st.header("📦 إدارة المخزن")
-    with st.form("inv"):
+# --- التبويب 4: المستودع ---
+elif menu == "📦 المستودع":
+    st.header("📦 إدارة الأصول وقطع الغيار")
+    with st.form("inv_corporate"):
         c1, c2, c3 = st.columns(3)
-        n, s, q = c1.text_input("القطعة"), c2.number_input("السعر $"), c3.number_input("الكمية", min_value=1)
-        if st.form_submit_button("إضافة"):
-            new_p = pd.DataFrame([[n, s, q]], columns=st.session_state.inv.columns)
-            st.session_state.inv = pd.concat([st.session_state.inv, new_p], ignore_index=True)
+        n, s, q = c1.text_input("اسم الصنف"), c2.number_input("سعر الوحدة $"), c3.number_input("الكمية المضافة", min_value=1)
+        if st.form_submit_button("إضافة للمخزون الرسمي"):
+            st.session_state.inv.loc[len(st.session_state.inv)] = [n, s, q]
             save_all(); st.rerun()
-    
-    for idx, item in st.session_state.inv.iterrows():
-        c1, c2, c3 = st.columns([2,1,1])
-        c1.write(f"**{item['القطعة']}**")
-        color = "green" if item['الكمية'] > 5 else "red"
-        c3.markdown(f"<span style='color:{color};'>الكمية: {item['الكمية']}</span>", unsafe_allow_html=True)
+    st.dataframe(st.session_state.inv, use_container_width=True)
 
-# --- المالية ---
-elif menu == "💰 المالية":
-    st.header("💰 تقارير الأرباح والشراكة")
+# --- التبويب 5: المالية ---
+elif menu == "💰 التقارير المالية":
+    st.header("💰 الإدارة المالية وتحليل الأرباح")
     df_f = st.session_state.db[st.session_state.db['الحالة']=='تم التسليم'].copy()
     if not df_f.empty:
         df_f['الشهر'] = pd.to_datetime(df_f['التاريخ']).dt.strftime('%Y-%m')
         for m in sorted(df_f['الشهر'].unique(), reverse=True):
             m_data = df_f[df_f['الشهر']==m]
             profit = m_data['التكلفة'].sum() - m_data['سعر_القطع'].sum()
-            with st.expander(f"📅 شهر {m} (الربح: {profit}$)", expanded=True):
-                st.markdown(f"<div class='profit-box'><h3>صافي الربح: {profit}$</h3><h4>حصة الشريك الواحد: {profit/2}$</h4></div>", unsafe_allow_html=True)
-                st.dataframe(m_data[['ID','الزبون','الموديل','التكلفة']])
+            with st.expander(f"📊 كشف مالي لشهر: {m}"):
+                st.markdown(f"<div class='profit-section'><h3>صافي ربح المركز: {profit}$</h3><h3>نصيب الشركاء (50% لكل شريك): {profit/2}$</h3></div>", unsafe_allow_html=True)
+                st.dataframe(m_data[['ID','الزبون','الموديل','التكلفة']], use_container_width=True)
